@@ -28,8 +28,13 @@ class Directives
     {
         return array_map(function($className) {
             return "[$className]";
-        }, $this->classes);
+        }, array_filter($this->classes, array($this, 'isNotAlreadyPresentInCompositions')));
     }
+
+    public function isNotAlreadyPresentInCompositions($className) {
+        return !(in_array($className, $this->compositionsSources) || in_array($className, $this->compositionTargets));
+    }
+
 
     private function compositionDirectives()
     {
