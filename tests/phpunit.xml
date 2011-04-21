@@ -1,0 +1,7 @@
+<phpunit boostrap="./boostrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Main test suite">
+            <directory>./</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
