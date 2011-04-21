@@ -5,19 +5,13 @@ class Introspector
     {
 
         $fullyQualifiedClassName = get_class($rootObject);
-        $baseClassName = $this->getBasename($fullyQualifiedClassName);
         $reflectionObject = new ReflectionObject($rootObject);
-        $directives = array();
         $properties = $reflectionObject->getProperties();
         if ($properties) {
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
-                $propertyValue = $property->getValue($rootObject);
-                $propertyClass = get_class($propertyValue);
-                 $directives[] = "[$baseClassName]->[" . $this->getBasename($propertyClass) . "]";
-            }
+            $directives = $this->propertiesToDirectives($rootObject, $properties);
         } else {
-            $directives[] = "[$baseClassName]";
+            $baseClassName = $this->getBasename($fullyQualifiedClassName);
+            $directives = array("[$baseClassName]");
         }
         return implode("\n", $directives);
     }
@@ -26,5 +20,17 @@ class Introspector
     {
         $position = strrpos($fullyQualifiedClassName, '\\');
         return substr($fullyQualifiedClassName, $position + 1);
+    }
+
+    private function propertiesToDirectives($object, $properties)
+    {
+        $baseClassName = $this->getBasename(get_class($object));
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $propertyValue = $property->getValue($object);
+            $propertyClass = get_class($propertyValue);
+             $directives[] = "[$baseClassName]->[" . $this->getBasename($propertyClass) . "]";
+        }
+        return $directives;
     }
 }
