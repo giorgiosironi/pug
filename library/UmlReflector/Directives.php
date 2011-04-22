@@ -7,11 +7,20 @@ class Directives
     private $compositionsSources = array();
     private $compositionTargets = array();
 
+    /**
+     * @param string $className     Class that should be represented in the diagram
+     * @return void
+     */
     public function addClass($className)
     {
         $this->classes[] = $className;
     }
 
+    /**
+     * @param string $sourceClassName   class containing the field
+     * @param string $targetClassName   class pointed
+     * @return void
+     */
     public function addComposition($sourceClassName, $targetClassName)
     {
         $this->compositionsSources[] = $sourceClassName;

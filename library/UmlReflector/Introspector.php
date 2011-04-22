@@ -3,6 +3,10 @@ namespace UmlReflector;
 
 class Introspector
 {
+    /**
+     * @param object $rootObject
+     * @return string yUML code
+     */
     public function visualize($rootObject)
     {
         $fullyQualifiedClassName = get_class($rootObject);
