@@ -1,0 +1,11 @@
+- factor out skipping of classes in two Strategies; SkippingStrategy or DontFollowStrategy
+-- interface SkippingStrategy
+-- NamespaceSkippingStrategy
+-- AlreadyVisitedSkippingStrategy
+- depth limit
+
+- ideas
+-- interfaces displaying (type hints on constructor|setters)
+--- maybe we should stop at the implementor of the interface, not going further
+-- multiple fields pointing to same class (rare)
+-- following arrays or Traversable objects
