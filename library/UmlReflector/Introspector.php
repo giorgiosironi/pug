@@ -3,6 +3,8 @@ namespace UmlReflector;
 
 class Introspector
 {
+    private $examinedClassNames = array();
+
     /**
      * @param object $rootObject
      * @return string yUML code
@@ -10,6 +12,10 @@ class Introspector
     public function visualize($rootObject, Directives $directives)
     {
         $reflectionObject = new \ReflectionObject($rootObject);
+        if (in_array($reflectionObject->getName(), $this->examinedClassNames)) {
+            return;
+        }
+        $this->examinedClassNames[] = $reflectionObject->getName();
         $this->classNameToDirectives($directives, $reflectionObject);
         $this->propertiesToDirectives($directives, $reflectionObject, $rootObject);
         $this->hierarchyToDirectives($directives, $reflectionObject);

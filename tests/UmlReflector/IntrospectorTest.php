@@ -7,6 +7,8 @@ use Stubs\Product;
 use Stubs\ProductDescription;
 use Stubs\Dog;
 use Stubs\Collie;
+use Stubs\Driver;
+use Stubs\Car;
 
 class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,6 +44,15 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $shop = new Shop(new Product(new ProductDescription));
         $this->visualize($shop);
         $this->assertEquals("[Shop]->[Product]\n[Product]->[ProductDescription]", $this->directives->toString());
+    }
+
+    public function testDisplaysMultipleLevelsOfCompositionWithoutFallingIntoInfiniteRecursion()
+    {
+        $driver = new Driver($car = new Car);
+        $car->setDriver($driver);
+        $this->visualize($car);
+        $this->assertEquals("[Car]->[Driver]\n[Driver]->[Car]", $this->directives->toString());
+        $this->markTestIncomplete("Result should be improved to exploit `-` relationship.");
     }
 
     public function testDisplaysParentAndChildObjectsAsAnInheritanceGraphWithTwoNodes()
