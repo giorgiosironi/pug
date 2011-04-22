@@ -4,6 +4,12 @@ namespace UmlReflector;
 class Introspector
 {
     private $examinedClassNames = array();
+    private $skippedNamespaces = array();
+
+    public function addSkippedNamespace($namespace)
+    {
+        $this->skippedNamespaces[] = $namespace;
+    }
 
     /**
      * @param object $rootObject
@@ -13,6 +19,9 @@ class Introspector
     {
         $reflectionObject = new \ReflectionObject($rootObject);
         if (in_array($reflectionObject->getName(), $this->examinedClassNames)) {
+            return;
+        }
+        if ($this->isInSkippedNamespace($reflectionObject->getName())) {
             return;
         }
         $this->examinedClassNames[] = $reflectionObject->getName();
@@ -29,6 +38,19 @@ class Introspector
         } else {
             return $fullyQualifiedClassName;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isInSkippedNamespace($className)
+    {
+        foreach ($this->skippedNamespaces as $namespace) {
+            if (strstr($className, $namespace) == $className) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function classNameToDirectives(Directives $directives, \ReflectionObject $reflectionObject)

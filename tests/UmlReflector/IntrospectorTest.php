@@ -82,6 +82,14 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $this->assertResultIs("[stdClass]");
     }
 
+    public function testCanSkipLibraryNamespaces()
+    {
+        $this->introspector->addSkippedNamespace('Stubs');
+        $shop = new \OtherStubs\LuxuryShop(new Product(new ProductDescription));
+        $this->visualize($shop);
+        $this->assertResultIs("[LuxuryShop]->[Product]");
+    }
+
     private function assertResultIs($yumlCode)
     {
         $this->assertEquals($yumlCode, $this->directives->toString());

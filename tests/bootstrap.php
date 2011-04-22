@@ -4,3 +4,5 @@ $classLoader = new UmlReflector\SplClassLoader('UmlReflector', __DIR__ . '/../li
 $classLoader->register();
 $classLoader = new UmlReflector\SplClassLoader('Stubs', __DIR__);
 $classLoader->register();
+$classLoader = new UmlReflector\SplClassLoader('OtherStubs', __DIR__);
+$classLoader->register();
