@@ -1,5 +1,7 @@
 <?php
-class DirectivesTest extends PHPUnit_Framework_TestCase
+namespace UmlReflector;
+
+class DirectivesTest extends \PHPUnit_Framework_TestCase
 {
     public function testAcceptsIsolatedClassesAsDirectives()
     {

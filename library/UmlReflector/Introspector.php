@@ -1,12 +1,12 @@
 <?php
-require_once 'Directives.php';
+namespace UmlReflector;
 
 class Introspector
 {
     public function visualize($rootObject)
     {
         $fullyQualifiedClassName = get_class($rootObject);
-        $reflectionObject = new ReflectionObject($rootObject);
+        $reflectionObject = new \ReflectionObject($rootObject);
         $properties = $reflectionObject->getProperties();
         $directives = new Directives();
         $this->propertiesToDirectives($directives, $rootObject, $properties);

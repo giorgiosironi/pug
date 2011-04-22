@@ -1,4 +1,6 @@
 <?php
+namespace UmlReflector;
+
 class Directives
 {
     private $classes = array();

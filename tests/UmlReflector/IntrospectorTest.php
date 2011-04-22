@@ -1,9 +1,11 @@
 <?php
+namespace UmlReflector;
+
 use Stubs\User;
 use Stubs\Product;
 use Stubs\ProductDescription;
 
-class IntrospectorTest extends PHPUnit_Framework_TestCase
+class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
     public function testDisplaysASingleObjectAsAGraphWithOneNode()
     {
