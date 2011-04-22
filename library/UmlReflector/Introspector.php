@@ -9,14 +9,11 @@ class Introspector
      */
     public function visualize($rootObject)
     {
-        $fullyQualifiedClassName = get_class($rootObject);
         $reflectionObject = new \ReflectionObject($rootObject);
-        $properties = $reflectionObject->getProperties();
         $directives = new Directives();
-        $this->propertiesToDirectives($directives, $rootObject, $properties);
+        $this->classNameToDirectives($directives, $reflectionObject);
+        $this->propertiesToDirectives($directives, $reflectionObject, $rootObject);
         $this->hierarchyToDirectives($directives, $reflectionObject);
-        $baseClassName = $this->getBasename($fullyQualifiedClassName);
-        $directives->addClass($baseClassName);
         return $directives->toString();
     }
 
@@ -26,12 +23,20 @@ class Introspector
         return substr($fullyQualifiedClassName, $position + 1);
     }
 
-    private function propertiesToDirectives(Directives $directives, $object, $properties)
+    private function classNameToDirectives(Directives $directives, \ReflectionObject $reflectionObject)
     {
-        $baseClassName = $this->getBasename(get_class($object));
+        $fullyQualifiedClassName = $reflectionObject->getName();
+        $baseClassName = $this->getBasename($fullyQualifiedClassName);
+        $directives->addClass($baseClassName);
+    }
+
+    private function propertiesToDirectives(Directives $directives, \ReflectionObject $reflectionObject, $rootObject)
+    {
+        $properties = $reflectionObject->getProperties();
+        $baseClassName = $this->getBasename($reflectionObject->getName());
         foreach ($properties as $property) {
             $property->setAccessible(true);
-            $propertyValue = $property->getValue($object);
+            $propertyValue = $property->getValue($rootObject);
             $propertyClass = $this->getBasename(get_class($propertyValue));
             $directives->addComposition($baseClassName, $propertyClass);
         }
@@ -42,9 +47,8 @@ class Introspector
         $parentClass = $object->getParentClass();
         $currentClass = $object;
         while ($parentClass) {
-            $classes = array($parentClass, $currentClass);
-            $parentClassName = $this->getBasename($classes[0]->getName());
-            $childClassName = $this->getBasename($classes[1]->getName());
+            $parentClassName = $this->getBasename($parentClass->getName());
+            $childClassName = $this->getBasename($currentClass->getName());
             $directives->addInheritance($parentClassName, $childClassName); 
             $currentClass = $parentClass;
             $parentClass = $parentClass->getParentClass();

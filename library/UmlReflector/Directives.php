@@ -29,10 +29,10 @@ class Directives
         $this->compositionTargets[] = $targetClassName;
     }
 
-    public function addInheritance($parentClass, $childClass)
+    public function addInheritance($parentClassName, $childClassName)
     {
-        $this->inheritanceParents[] = $parentClass;
-        $this->inheritanceChildren[] = $childClass;
+        $this->inheritanceParents[] = $parentClassName;
+        $this->inheritanceChildren[] = $childClassName;
     }
 
     public function toString()
@@ -72,9 +72,9 @@ class Directives
     private function inheritanceDirectives()
     {
         $inheritanceDirectives = array();
-        foreach ($this->inheritanceParents as $i => $parentClass) {
-            $childClass = $this->inheritanceChildren[$i];
-            $inheritanceDirectives[] = "[$parentClass]^-[$childClass]";
+        foreach ($this->inheritanceParents as $i => $parentClassName) {
+            $childClassName = $this->inheritanceChildren[$i];
+            $inheritanceDirectives[] = "[$parentClassName]^-[$childClassName]";
         }
         return $inheritanceDirectives;
     }
