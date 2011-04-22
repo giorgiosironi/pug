@@ -5,6 +5,7 @@ use Stubs\User;
 use Stubs\Product;
 use Stubs\ProductDescription;
 use Stubs\Dog;
+use Stubs\Collie;
 
 class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,5 +35,12 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $dog = new Dog();
         $classDiagram = $this->introspector->visualize($dog);
         $this->assertEquals('[Animal]^-[Dog]', $classDiagram);
+    }
+
+    public function testDisplaysAThreeLevelHierarchyAsAnInheritanceGraphWithThreeNodes()
+    {
+        $lassie = new Collie();
+        $classDiagram = $this->introspector->visualize($lassie);
+        $this->assertEquals("[Dog]^-[Collie]\n[Animal]^-[Dog]", $classDiagram);
     }
 }

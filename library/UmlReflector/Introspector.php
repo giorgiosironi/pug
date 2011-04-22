@@ -14,11 +14,7 @@ class Introspector
         $properties = $reflectionObject->getProperties();
         $directives = new Directives();
         $this->propertiesToDirectives($directives, $rootObject, $properties);
-        $parentClass = $reflectionObject->getParentClass();
-        if ($parentClass) {
-            $classes = array($parentClass, $reflectionObject);
-            $this->hierarchyToDirectives($directives, $rootObject, $classes);
-        }
+        $this->hierarchyToDirectives($directives, $reflectionObject);
         $baseClassName = $this->getBasename($fullyQualifiedClassName);
         $directives->addClass($baseClassName);
         return $directives->toString();
@@ -41,10 +37,17 @@ class Introspector
         }
     }
 
-    private function hierarchyToDirectives(Directives $directives, $object, array $classes)
+    private function hierarchyToDirectives(Directives $directives, \ReflectionObject $object)
     {
-        $parentClass = $this->getBasename($classes[0]->getName());
-        $childClass = $this->getBasename($classes[1]->getName());
-        $directives->addInheritance($parentClass, $childClass); 
+        $parentClass = $object->getParentClass();
+        $currentClass = $object;
+        while ($parentClass) {
+            $classes = array($parentClass, $currentClass);
+            $parentClassName = $this->getBasename($classes[0]->getName());
+            $childClassName = $this->getBasename($classes[1]->getName());
+            $directives->addInheritance($parentClassName, $childClassName); 
+            $currentClass = $parentClass;
+            $parentClass = $parentClass->getParentClass();
+        }
     }
 }
