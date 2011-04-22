@@ -6,6 +6,8 @@ class Directives
     private $classes = array();
     private $compositionsSources = array();
     private $compositionTargets = array();
+    private $inheritanceParents = array();
+    private $inheritanceChildren = array();
 
     /**
      * @param string $className     Class that should be represented in the diagram
@@ -27,11 +29,18 @@ class Directives
         $this->compositionTargets[] = $targetClassName;
     }
 
+    public function addInheritance($parentClass, $childClass)
+    {
+        $this->inheritanceParents[] = $parentClass;
+        $this->inheritanceChildren[] = $childClass;
+    }
+
     public function toString()
     {
         return implode("\n", array_merge(
             $this->classesDirectives(),
-            $this->compositionDirectives()
+            $this->compositionDirectives(),
+            $this->inheritanceDirectives()
         ));
     }
 
@@ -39,13 +48,16 @@ class Directives
     {
         return array_map(function($className) {
             return "[$className]";
-        }, array_filter($this->classes, array($this, 'isNotAlreadyPresentInCompositions')));
+        }, array_filter($this->classes, array($this, 'isNotAlreadyPresentInRelationships')));
     }
 
-    public function isNotAlreadyPresentInCompositions($className) {
-        return !(in_array($className, $this->compositionsSources) || in_array($className, $this->compositionTargets));
+    public function isNotAlreadyPresentInRelationships($className) {
+        return !(in_array($className, $this->compositionsSources)
+              || in_array($className, $this->compositionTargets)
+              || in_array($className, $this->inheritanceParents)
+              || in_array($className, $this->inheritanceChildren)
+        );
     }
-
 
     private function compositionDirectives()
     {
@@ -55,5 +67,15 @@ class Directives
             $compositionDirectives[] = "[$sourceClassName]->[$targetClassName]";
         }
         return $compositionDirectives;
+    }
+
+    private function inheritanceDirectives()
+    {
+        $inheritanceDirectives = array();
+        foreach ($this->inheritanceParents as $i => $parentClass) {
+            $childClass = $this->inheritanceChildren[$i];
+            $inheritanceDirectives[] = "[$parentClass]^-[$childClass]";
+        }
+        return $inheritanceDirectives;
     }
 }

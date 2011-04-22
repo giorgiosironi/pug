@@ -4,22 +4,35 @@ namespace UmlReflector;
 use Stubs\User;
 use Stubs\Product;
 use Stubs\ProductDescription;
+use Stubs\Dog;
 
 class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
+    private $introspector;
+
+    public function setUp()
+    {
+        $this->introspector = new Introspector();
+    }
+
     public function testDisplaysASingleObjectAsAGraphWithOneNode()
     {
         $user = new User();
-        $introspector = new Introspector();
-        $classDiagram = $introspector->visualize($user);
+        $classDiagram = $this->introspector->visualize($user);
         $this->assertEquals('[User]', $classDiagram);
     }
 
     public function testDisplaysACoupleOfObjectsAsACompositionGraphWithTwoNodes()
     {
         $product = new Product(new ProductDescription);
-        $introspector = new Introspector();
-        $classDiagram = $introspector->visualize($product);
+        $classDiagram = $this->introspector->visualize($product);
         $this->assertEquals('[Product]->[ProductDescription]', $classDiagram);
+    }
+
+    public function testDisplaysParentAndChildObjectsAsAnInheritanceGraphWithTwoNodes()
+    {
+        $dog = new Dog();
+        $classDiagram = $this->introspector->visualize($dog);
+        $this->assertEquals('[Animal]^-[Dog]', $classDiagram);
     }
 }

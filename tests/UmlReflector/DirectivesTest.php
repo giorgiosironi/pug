@@ -17,21 +17,24 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
         $this->assertDirectivesEqualTo("[User]->[UserCollaborator]", $directives);
     }
 
-    public function testConsidersClassesIdempotentWhenAlreadyPresentInComposition()
+    public function testAcceptsInheritanceAsADirective()
     {
         $directives = new Directives();
-        $directives->addComposition("User", "UserCollaborator");
-        $directives->addClass("User");
-        $this->assertDirectivesEqualTo("[User]->[UserCollaborator]", $directives);
+        $directives->addInheritance("Animal", "Dog");
+        $this->assertDirectivesEqualTo("[Animal]^-[Dog]", $directives);
     }
 
-    public function testConsidersClassesIdempotentWhenACompositionRegardingThemIsAdded()
+    public function testConsidersClassesIdempotentWhenAlreadyPresentInRelationships()
     {
         $directives = new Directives();
-        $directives->addClass("User");
         $directives->addComposition("User", "UserCollaborator");
-        $this->assertDirectivesEqualTo("[User]->[UserCollaborator]", $directives);
+        $directives->addInheritance("Animal", "Dog");
+        $directives->addClass("User");
+        $directives->addClass("Animal");
+        $this->assertDirectivesEqualTo("[User]->[UserCollaborator]\n[Animal]^-[Dog]", $directives);
     }
+
+
 
     private function assertDirectivesEqualTo($content, Directives $directives)
     {
