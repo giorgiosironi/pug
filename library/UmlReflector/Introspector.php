@@ -41,6 +41,9 @@ class Introspector
         foreach ($properties as $property) {
             $property->setAccessible(true);
             $collaborator = $property->getValue($rootObject);
+            if (!is_object($collaborator)) {
+                continue;
+            }
             $propertyClass = $this->getBasename(get_class($collaborator));
             $directives->addComposition($baseClassName, $propertyClass);
             $this->visualize($collaborator, $directives);

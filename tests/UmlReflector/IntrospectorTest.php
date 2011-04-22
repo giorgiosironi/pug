@@ -9,6 +9,7 @@ use Stubs\Dog;
 use Stubs\Collie;
 use Stubs\Driver;
 use Stubs\Car;
+use Stubs\Country;
 
 class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -67,6 +68,12 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $lassie = new Collie();
         $this->visualize($lassie);
         $this->assertResultIs("[Dog]^-[Collie]\n[Animal]^-[Dog]");
+    }
+
+    public function testSkipsScalarFields()
+    {
+        $this->visualize(new Country("Italy"));
+        $this->assertResultIs("[Country]");
     }
 
     private function assertResultIs($yumlCode)
