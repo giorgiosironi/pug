@@ -34,9 +34,10 @@ class Introspector
         $baseClassName = $this->getBasename($reflectionObject->getName());
         foreach ($properties as $property) {
             $property->setAccessible(true);
-            $propertyValue = $property->getValue($rootObject);
-            $propertyClass = $this->getBasename(get_class($propertyValue));
+            $collaborator = $property->getValue($rootObject);
+            $propertyClass = $this->getBasename(get_class($collaborator));
             $directives->addComposition($baseClassName, $propertyClass);
+            $this->visualize($collaborator, $directives);
         }
     }
 

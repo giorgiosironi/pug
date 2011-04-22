@@ -2,6 +2,7 @@
 namespace UmlReflector;
 
 use Stubs\User;
+use Stubs\Shop;
 use Stubs\Product;
 use Stubs\ProductDescription;
 use Stubs\Dog;
@@ -34,6 +35,13 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $product = new Product(new ProductDescription);
         $this->visualize($product);
         $this->assertEquals('[Product]->[ProductDescription]', $this->directives->toString());
+    }
+
+    public function testDisplaysMultipleLevelsOfComposition()
+    {
+        $shop = new Shop(new Product(new ProductDescription));
+        $this->visualize($shop);
+        $this->assertEquals("[Shop]->[Product]\n[Product]->[ProductDescription]", $this->directives->toString());
     }
 
     public function testDisplaysParentAndChildObjectsAsAnInheritanceGraphWithTwoNodes()
