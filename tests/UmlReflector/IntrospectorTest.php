@@ -14,33 +14,39 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->introspector = new Introspector();
+        $this->directives = new Directives();
+    }
+
+    private function visualize($object)
+    {
+        $this->introspector->visualize($object, $this->directives);
     }
 
     public function testDisplaysASingleObjectAsAGraphWithOneNode()
     {
         $user = new User();
-        $classDiagram = $this->introspector->visualize($user);
-        $this->assertEquals('[User]', $classDiagram);
+        $this->visualize($user);
+        $this->assertEquals('[User]', $this->directives->toString());
     }
 
     public function testDisplaysACoupleOfObjectsAsACompositionGraphWithTwoNodes()
     {
         $product = new Product(new ProductDescription);
-        $classDiagram = $this->introspector->visualize($product);
-        $this->assertEquals('[Product]->[ProductDescription]', $classDiagram);
+        $this->visualize($product);
+        $this->assertEquals('[Product]->[ProductDescription]', $this->directives->toString());
     }
 
     public function testDisplaysParentAndChildObjectsAsAnInheritanceGraphWithTwoNodes()
     {
         $dog = new Dog();
-        $classDiagram = $this->introspector->visualize($dog);
-        $this->assertEquals('[Animal]^-[Dog]', $classDiagram);
+        $this->visualize($dog);
+        $this->assertEquals('[Animal]^-[Dog]', $this->directives->toString());
     }
 
     public function testDisplaysAThreeLevelHierarchyAsAnInheritanceGraphWithThreeNodes()
     {
         $lassie = new Collie();
-        $classDiagram = $this->introspector->visualize($lassie);
-        $this->assertEquals("[Dog]^-[Collie]\n[Animal]^-[Dog]", $classDiagram);
+        $this->visualize($lassie);
+        $this->assertEquals("[Dog]^-[Collie]\n[Animal]^-[Dog]", $this->directives->toString());
     }
 }

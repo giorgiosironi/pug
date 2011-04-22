@@ -7,14 +7,12 @@ class Introspector
      * @param object $rootObject
      * @return string yUML code
      */
-    public function visualize($rootObject)
+    public function visualize($rootObject, Directives $directives)
     {
         $reflectionObject = new \ReflectionObject($rootObject);
-        $directives = new Directives();
         $this->classNameToDirectives($directives, $reflectionObject);
         $this->propertiesToDirectives($directives, $reflectionObject, $rootObject);
         $this->hierarchyToDirectives($directives, $reflectionObject);
-        return $directives->toString();
     }
 
     private function getBasename($fullyQualifiedClassName)
