@@ -76,6 +76,12 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $this->assertResultIs("[Country]");
     }
 
+    public function testBaseClassNamesAreJustClassNamesForNonNamespacedClasses()
+    {
+        $this->visualize(new \stdClass);
+        $this->assertResultIs("[stdClass]");
+    }
+
     private function assertResultIs($yumlCode)
     {
         $this->assertEquals($yumlCode, $this->directives->toString());

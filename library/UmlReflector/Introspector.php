@@ -24,7 +24,11 @@ class Introspector
     private function getBasename($fullyQualifiedClassName)
     {
         $position = strrpos($fullyQualifiedClassName, '\\');
-        return substr($fullyQualifiedClassName, $position + 1);
+        if ($position) {
+            return substr($fullyQualifiedClassName, $position + 1);
+        } else {
+            return $fullyQualifiedClassName;
+        }
     }
 
     private function classNameToDirectives(Directives $directives, \ReflectionObject $reflectionObject)
