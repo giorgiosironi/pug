@@ -25,7 +25,10 @@ class DirectivesTest extends PHPUnit_Framework_TestCase
 
     public function testConsidersClassesIdempotentWhenACompositionRegardingThemIsAdded()
     {
-        $this->markTestIncomplete();
+        $directives = new Directives();
+        $directives->addClass("User");
+        $directives->addComposition("User", "UserCollaborator");
+        $this->assertDirectivesEqualTo("[User]->[UserCollaborator]", $directives);
     }
 
     private function assertDirectivesEqualTo($content, Directives $directives)
