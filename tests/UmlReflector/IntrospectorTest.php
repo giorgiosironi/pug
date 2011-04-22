@@ -29,21 +29,21 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
     {
         $user = new User();
         $this->visualize($user);
-        $this->assertEquals('[User]', $this->directives->toString());
+        $this->assertResultIs('[User]');
     }
 
     public function testDisplaysACoupleOfObjectsAsACompositionGraphWithTwoNodes()
     {
         $product = new Product(new ProductDescription);
         $this->visualize($product);
-        $this->assertEquals('[Product]->[ProductDescription]', $this->directives->toString());
+        $this->assertResultIs('[Product]->[ProductDescription]');
     }
 
     public function testDisplaysMultipleLevelsOfComposition()
     {
         $shop = new Shop(new Product(new ProductDescription));
         $this->visualize($shop);
-        $this->assertEquals("[Shop]->[Product]\n[Product]->[ProductDescription]", $this->directives->toString());
+        $this->assertResultIs("[Shop]->[Product]\n[Product]->[ProductDescription]");
     }
 
     public function testDisplaysMultipleLevelsOfCompositionWithoutFallingIntoInfiniteRecursion()
@@ -51,7 +51,7 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $driver = new Driver($car = new Car);
         $car->setDriver($driver);
         $this->visualize($car);
-        $this->assertEquals("[Car]->[Driver]\n[Driver]->[Car]", $this->directives->toString());
+        $this->assertResultIs("[Car]->[Driver]\n[Driver]->[Car]");
         $this->markTestIncomplete("Result should be improved to exploit `-` relationship.");
     }
 
@@ -59,13 +59,18 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
     {
         $dog = new Dog();
         $this->visualize($dog);
-        $this->assertEquals('[Animal]^-[Dog]', $this->directives->toString());
+        $this->assertResultIs('[Animal]^-[Dog]');
     }
 
     public function testDisplaysAThreeLevelHierarchyAsAnInheritanceGraphWithThreeNodes()
     {
         $lassie = new Collie();
         $this->visualize($lassie);
-        $this->assertEquals("[Dog]^-[Collie]\n[Animal]^-[Dog]", $this->directives->toString());
+        $this->assertResultIs("[Dog]^-[Collie]\n[Animal]^-[Dog]");
+    }
+
+    private function assertResultIs($yumlCode)
+    {
+        $this->assertEquals($yumlCode, $this->directives->toString());
     }
 }
