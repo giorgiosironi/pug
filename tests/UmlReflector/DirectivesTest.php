@@ -34,6 +34,12 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
         $this->assertDirectivesEqualTo("[User]->[UserCollaborator]\n[Animal]^-[Dog]", $directives);
     }
 
+    public function testAcceptsInterfaceImplementationsAsDirectives()
+    {
+        $directives = new Directives();
+        $directives->addInterface("Windows", "Wreck");
+        $this->assertDirectivesEqualTo("[Windows]-.-^[Wreck]", $directives);
+    }
 
 
     private function assertDirectivesEqualTo($content, Directives $directives)

@@ -28,6 +28,7 @@ class Introspector
         $this->classNameToDirectives($directives, $reflectionObject);
         $this->propertiesToDirectives($directives, $reflectionObject, $rootObject);
         $this->hierarchyToDirectives($directives, $reflectionObject);
+        $this->interfacesToDirectives($directives, $reflectionObject);
     }
 
     private function getBasename($fullyQualifiedClassName)
@@ -86,6 +87,15 @@ class Introspector
             $directives->addInheritance($parentClassName, $childClassName); 
             $currentClass = $parentClass;
             $parentClass = $parentClass->getParentClass();
+        }
+    }
+    
+    private function interfacesToDirectives(Directives $directives, \ReflectionObject $object)
+    {
+        $className = $this->getBasename($object->getName());
+        
+        foreach ($object->getInterfaceNames() as $implemented) {
+            $directives->addInterface($className, $this->getBasename($implemented)); 
         }
     }
 }
