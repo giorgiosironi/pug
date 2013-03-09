@@ -10,6 +10,7 @@ use Stubs\Collie;
 use Stubs\Driver;
 use Stubs\Car;
 use Stubs\Country;
+use Stubs\Windows;
 
 class IntrospectorTest extends \PHPUnit_Framework_TestCase
 {
@@ -88,6 +89,13 @@ class IntrospectorTest extends \PHPUnit_Framework_TestCase
         $shop = new \OtherStubs\LuxuryShop(new Product(new ProductDescription));
         $this->visualize($shop);
         $this->assertResultIs("[LuxuryShop]->[Product]");
+    }
+    
+    public function testDisplaysInterfaceGraphWithTwoNodes()
+    {
+        $dog = new Windows();
+        $this->visualize($dog);
+        $this->assertResultIs("[Windows]\n[Windows]-.-^[Wreck]");
     }
 
     private function assertResultIs($yumlCode)

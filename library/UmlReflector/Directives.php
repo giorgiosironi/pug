@@ -8,6 +8,8 @@ class Directives
     private $compositionTargets = array();
     private $inheritanceParents = array();
     private $inheritanceChildren = array();
+    private $implementors = array();
+    private $interfaces = array();
 
     /**
      * @param string $className     Class that should be represented in the diagram
@@ -28,6 +30,17 @@ class Directives
         $this->compositionsSources[] = $sourceClassName;
         $this->compositionTargets[] = $targetClassName;
     }
+    
+    /**
+     * @param string $implementor
+     * @param string $interface
+     * @return void
+     */
+    public function addInterface($implementor, $interface)
+    {
+        $this->implementors[] = $implementor;
+        $this->interfaces[] = $interface;
+    }
 
     public function addInheritance($parentClassName, $childClassName)
     {
@@ -40,7 +53,8 @@ class Directives
         return implode("\n", array_merge(
             $this->classesDirectives(),
             $this->compositionDirectives(),
-            $this->inheritanceDirectives()
+            $this->inheritanceDirectives(),
+            $this->interfaceDirectives()
         ));
     }
 
@@ -67,6 +81,16 @@ class Directives
             $compositionDirectives[] = "[$sourceClassName]->[$targetClassName]";
         }
         return $compositionDirectives;
+    }
+    
+    private function interfaceDirectives()
+    {
+        $interfaceDirectives = array();
+        foreach ($this->implementors as $i => $parentClassName) {
+            $childClassName = $this->interfaces[$i];
+            $interfaceDirectives[] = "[$parentClassName]-.-^[$childClassName]";
+        }
+        return $interfaceDirectives;
     }
 
     private function inheritanceDirectives()
